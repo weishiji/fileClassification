@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-var finder = require('findit')(process.argv[2] || '.'); //查找文件/文件夹
+var pathUrl = process.argv[2] || '.'
+var finder = require('findit')(pathUrl); //查找文件/文件夹
 var ExifImage = require('exif').ExifImage;//获取图片的Exif信息
 var fs = require('fs-extra');//移动，复制，删除文件/文件夹
 var path = require('path');

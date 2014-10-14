@@ -2,5 +2,7 @@ node_modules
 .tmp
 .idea
 .idea/*
-photo
-photo*
+照片整理
+*.[jJ][pP][gG]
+*.[pP][nN][gG]
+*.[jJ][pP][eE][gG]

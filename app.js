@@ -31,20 +31,20 @@ function createRootFolder(){
 				}
 			});
 		}catch (error) {
-			//console.log('Error: ' + error.message);
+			console.log('Error: ' + error.message);
 		}
 	});
 
 }
 function createPhotoFolder(data,name){
-	var takenTime = data.exif.DateTimeOriginal
-	console.log(takenTime)
+	var takenTime = data.exif.DateTimeOriginal || data.image.DateTimeOriginal
+	console.log(data,'filename')
 	if(!takenTime){
+		console.log(name + ": no taken time")
 		return false
 	}	
 	var temp = takenTime.split(":")
 	takenTime = temp[0] + "-" + temp[1]
-	console.log(takenTime,"tanke")
 	fs.mkdirs("./" + rootFolder + "/" +takenTime, function(err){
 		if (err) return console.error(err);
 		var oldPath = argvPath + "/" + name

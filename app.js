@@ -23,6 +23,12 @@ var path = require('path');
 		var finder = this.args[0] ? require('findit')('./'+this.args[0]) : require('findit')('.');
 		finder.on('file',function(filePath, stat){
 			this.isPicture(filePath);
+		}.bind(this));
+		finder.on('directory',function(dir,stat,stop){
+			var base = path.basename(dir);
+	    if (base === '.git' || base === 'node_modules') stop()
+			else if (!this.args[0] && base === rootFolder) stop()
+	    else console.log(dir + '/')
 		}.bind(this))
 	}
 	ClassFication.prototype.isPicture = function(filePath){
@@ -40,13 +46,19 @@ var path = require('path');
 		}
 	}
 	ClassFication.prototype.createPhotoFolder = function(exifData,filePath){
-		//TODO:改变规则，进行分类
-		var categoryDir = this.makeCategoryDirByTakenTime(exifData);
-		var newPath = rootFolder + '/' + (this.args[0] || '.') + '/' + categoryDir;
 		var fileName = this.getFileName(filePath);
+
+		//TODO:改变规则，进行分类
+		//var categoryDir = this.makeCategoryDirByTakenTime(exifData);
+		var categoryDir = this.makeCategoryDirByFileName(fileName);
+
+		var pathArr = [rootFolder];
+		if(this.args[0]) pathArr.push(this.args[0]);
+		if(categoryDir) pathArr.push(categoryDir);
+
+		var newPath = pathArr.join('/')
 		fs.mkdirsSync(newPath);
 
-		console.log(fileName,'this is olde faf======================')
 		fs.move(filePath,newPath+'/'+fileName,function(err){
 			if (err) return console.error(err);
 			console.log(fileName + " move success!")
@@ -64,6 +76,13 @@ var path = require('path');
 	}
 	ClassFication.prototype.getFileName = function(filePath){
 		return path.basename(filePath)
+	}
+	ClassFication.prototype.makeCategoryDirByFileName = function(fileName){
+		if(!fileName.match(/.*(-.*)+?/)){
+			console.log(fileName + ': this is image name is illegal ');
+			return '';
+		}
+		return fileName.split('-')[0];
 	}
 	new ClassFication();
 }());
